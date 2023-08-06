@@ -9,9 +9,8 @@ import (
 	"gorm.io/gorm"
 )
 
-var DB *gorm.DB
 
-func Connect() {
+func CreateConnection() *gorm.DB {
 	dsn := fmt.Sprintf(
 		"host=%s user=%s password=%s dbname=%s port=%s sslmode=disable",
 		os.Getenv("DATABASE_HOST"),
@@ -30,5 +29,5 @@ func Connect() {
 
 	database.AutoMigrate(&models.User{})
 
-	DB = database
+	return database
 }

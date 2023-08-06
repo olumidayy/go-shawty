@@ -6,26 +6,18 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/olumidayy/go-shawty/src/domain/models"
 	"github.com/olumidayy/go-shawty/src/usecases"
-	"gorm.io/gorm"
 )
 
 type AuthController struct {
-	Usecases usecases.UserUsecases
+	Usecases usecases.AuthUsecases
 }
 
-func NewAuthController (DB *gorm.DB) *AuthController {
+func NewAuthController (au usecases.AuthUsecases) *AuthController {
 	return &AuthController{
-		Usecases: *usecases.NewUserUsecases(DB),
+		Usecases: au,
 	}
 }
 
-type CreateUserInput struct {
-	ID uint
-  FirstName string `json:"first_name"`
-  LastName string `json:"last_name"`
-  Email int `json:"email"`
-  Password uint `json:"password"`
-}
 
 func (uc *AuthController) Register(c *gin.Context) {
 	var input models.User
@@ -34,6 +26,10 @@ func (uc *AuthController) Register(c *gin.Context) {
     return
   }
 
-	user := uc.Usecases.CreateNewUser(input)
+	user, err := uc.Usecases.RegisterUser(input)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
+		return
+	}
 	c.JSON(http.StatusOK, gin.H{"data": user})
 }

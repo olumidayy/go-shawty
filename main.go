@@ -10,9 +10,9 @@ import (
 
 func main() {
   r := gin.Default()
-	database.Connect()
+	DB := database.CreateConnection()
 
-	routes.SetupRoutes(r)
+	routes.SetupRoutes(r, DB)
 
   r.GET("/ping", func(c *gin.Context) {
     c.JSON(http.StatusOK, gin.H{
